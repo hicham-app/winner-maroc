@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WINNER MAROC — Product Research</title>
+<style>
+:root{--navy:#0b1730;--gold:#c9a227;--bg:#f4f6fa;--card:#fff;--text:#172033;--muted:#687386;--line:#e5e9f0;--green:#138a5b;--red:#c43b4b;--orange:#b56a00}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{display:flex;min-height:100vh}.side{width:245px;background:var(--navy);color:#fff;padding:22px 14px;position:fixed;inset:0 auto 0 0}
+.logo{font-size:24px;font-weight:800;letter-spacing:.5px;padding:8px 10px}.logo span{color:var(--gold)}
+.sub{font-size:11px;color:#aeb8c9;padding:0 10px 22px}.nav button{width:100%;border:0;background:transparent;color:#d9dfeb;text-align:left;padding:12px 13px;border-radius:10px;margin:3px 0;cursor:pointer;font-size:14px}.nav button.active,.nav button:hover{background:#172746;color:#fff}
+.main{margin-left:245px;width:calc(100% - 245px);padding:28px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.top h1{margin:0;font-size:25px}.badge{background:#fff1c7;color:#765900;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:0 2px 10px #0b173008}.metric{font-size:28px;font-weight:800;margin:7px 0}.muted{color:var(--muted);font-size:12px}.section{margin-top:20px}.section h2{font-size:17px;margin:0 0 12px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.input,.select{border:1px solid var(--line);background:#fff;padding:11px 12px;border-radius:9px;outline:none}.btn{border:0;background:var(--navy);color:#fff;padding:10px 14px;border-radius:9px;cursor:pointer;font-weight:700}.btn.gold{background:var(--gold);color:#172033}.btn.light{background:#eef1f6;color:var(--text)}
+.tablewrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px}.table{width:100%;border-collapse:collapse;min-width:800px}.table th,.table td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.table th{font-size:11px;color:var(--muted);text-transform:uppercase}.pill{padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}.low{background:#e7f7ef;color:var(--green)}.med{background:#fff2dc;color:var(--orange)}.high{background:#fde8eb;color:var(--red)}
+.score{font-weight:800;color:var(--navy)}.page{display:none}.page.active{display:block}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.formgrid label{font-size:12px;color:var(--muted)}.formgrid input,.formgrid select{width:100%;margin-top:5px}.result{font-size:32px;font-weight:800}.bar{height:8px;background:#edf0f5;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gold)}.empty{padding:35px;text-align:center;color:var(--muted)}
+@media(max-width:900px){.side{width:72px}.logo{font-size:14px;padding-left:7px}.logo span{display:none}.sub{display:none}.nav button{font-size:0;text-align:center}.nav button:before{content:"•";font-size:20px}.main{margin-left:72px;width:calc(100% - 72px);padding:18px}.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.grid,.formgrid{grid-template-columns:1fr}.top{align-items:flex-start;gap:10px;flex-direction:column}.main{padding:12px}}
+
+/* ================= V6 MOBILE NAVIGATION ================= */
+.wm-mobile-menu-btn{display:none}
+.wm-side-overlay{display:none}
+@media(max-width:900px){
+  .side{
+    width:260px !important;
+    transform:translateX(-105%);
+    transition:transform .22s ease;
+    z-index:1000;
+    box-shadow:18px 0 45px rgba(0,0,0,.22);
+    padding:20px 14px !important;
+  }
+  body.wm-menu-open .side{transform:translateX(0)}
+  body.wm-menu-open .wm-side-overlay{
+    display:block;
+    position:fixed;
+    inset:0;
+    background:rgba(5,12,27,.48);
+    z-index:999;
+  }
+  .logo{font-size:24px !important;padding-left:10px !important}
+  .logo span{display:inline !important}
+  .sub{display:block !important;padding:0 10px 18px !important}
+  .nav button{
+    font-size:14px !important;
+    text-align:left !important;
+    padding:12px 13px !important;
+  }
+  .nav button:before{content:"" !important;font-size:0 !important}
+  .main{
+    margin-left:0 !important;
+    width:100% !important;
+    padding:14px !important;
+  }
+  .top{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:var(--bg);
+    padding:4px 0 12px;
+    margin-bottom:4px;
+  }
+  .top h1{font-size:28px !important}
+  .wm-mobile-menu-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:42px;
+    height:42px;
+    border:0;
+    border-radius:10px;
+    background:var(--navy);
+    color:#fff;
+    font-size:22px;
+    cursor:pointer;
+    flex:0 0 auto;
+  }
+  .top > div:last-child{
+    gap:6px !important;
+    flex-wrap:wrap;
+  }
+  .top .badge{font-size:10px !important;padding:8px 10px !important}
+  .top .btn.light{padding:9px 10px !important}
+  .grid{grid-template-columns:1fr !important}
+  .formgrid{grid-template-columns:1fr !important}
+  .toolbar{gap:8px}
+  .toolbar .input,.toolbar .select{width:100% !important}
+  .toolbar .btn{width:100%}
+  .tablewrap{overflow-x:auto}
+}
+@media(max-width:520px){
+  .top h1{font-size:24px !important}
+  .wm-user{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+
+</style>
+
+<meta name="theme-color" content="#0b1730">
+<meta name="description" content="WINNER MAROC — Product Research Intelligence for Moroccan COD e-commerce">
+<link rel="manifest" href="manifest.webmanifest">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+#wmAuthOverlay{position:fixed;inset:0;background:rgba(5,12,27,.72);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+#wmAuthCard{width:min(420px,100%);background:#fff;border-radius:18px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+#wmAuthCard h2{margin:0 0 6px;color:#0b1730}
+#wmAuthCard .wm-small{font-size:12px;color:#687386;margin-bottom:18px}
+#wmAuthCard input{width:100%;padding:12px;border:1px solid #dfe4ec;border-radius:10px;margin:6px 0 10px;font-size:14px}
+#wmAuthMsg{font-size:12px;margin-top:12px;min-height:18px}
+#wmAuthActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.wm-userbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.wm-user{font-size:12px;color:#687386;background:#fff;border:1px solid #e5e9f0;border-radius:999px;padding:7px 10px}
+</style>
+</head>
+<body>
+<div id="wmAuthOverlay">
+  <div id="wmAuthCard">
+    <h2>WINNER MAROC</h2>
+    <div class="wm-small">Connexion pour sauvegarder tes recherches en ligne.</div>
+    <label>Email<input id="wmEmail" type="email" autocomplete="email" placeholder="ton@email.com"></label>
+    <label>Mot de passe<input id="wmPassword" type="password" autocomplete="current-password" placeholder="Minimum 6 caractères"></label>
+    <div id="wmAuthActions">
+      <button class="btn gold" onclick="wmSignIn()">Se connecter</button>
+      <button class="btn light" onclick="wmSignUp()">Créer un compte</button>
+    </div>
+    <div id="wmAuthMsg"></div>
+  </div>
+</div>
+<div class="wm-side-overlay" onclick="wmToggleMenu(false)"></div>
+<div class="app">
+<aside class="side">
+  <div class="logo">WINNER <span>MAROC</span></div>
+  <div class="sub">Product Research Intelligence · COD 🇲🇦 · ONLINE</div>
+  <div class="nav">
+    <button class="active" data-page="dashboard">Dashboard</button>
+    <button data-page="products">Product Research</button>
+    <button data-page="competitors">Competitors</button>
+    <button data-page="ads">Meta / TikTok Ads</button>
+    <button data-page="research">Research Center</button>
+    <button data-page="compare">Compare Products</button>
+    <button data-page="report">Research Report</button>
+    <button data-page="data">Data Center</button>
+    <button data-page="landing">Landing Analyzer</button>
+    <button data-page="profit">Profit Calculator</button>
+    <button data-page="watchlist">Watchlist</button>
+    <button data-page="tests">Test Tracker</button>
+  </div>
+</aside>
+
+<main class="main">
+<div class="top"><div style="display:flex;align-items:center;gap:10px"><button class="wm-mobile-menu-btn" onclick="wmToggleMenu()" aria-label="Menu">☰</button><h1 id="title">Dashboard</h1></div>
+<div style="display:flex;gap:8px;align-items:center">
+<span class="badge">ONLINE · SUPABASE</span>
+<button class="btn light" onclick="backupAll()">💾 Backup</button>
+<label class="btn light">Restore<input id="restoreFile" type="file" accept=".json" style="display:none" onchange="restoreAll(event)"></label>
+</div></div>
+
+<section id="dashboard" class="page active">
+<div class="grid">
+<div class="card"><div class="muted">Products researched</div><div class="metric" id="mProducts">0</div></div>
+<div class="card"><div class="muted">High potential</div><div class="metric" id="mHigh">0</div></div>
+<div class="card"><div class="muted">Watchlist</div><div class="metric" id="mWatch">0</div></div>
+<div class="card"><div class="muted">Average score</div><div class="metric" id="mAvg">0</div></div>
+</div>
+<div class="section"><h2>🔥 Product Opportunities</h2><div class="tablewrap"><table class="table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Competition</th><th>Meta</th><th>TikTok</th><th>Score</th><th></th></tr></thead><tbody id="dashTable"></tbody></table></div></div>
+</section>
+
+<section id="products" class="page">
+<div class="toolbar"><input id="search" class="input" placeholder="Rechercher un produit..."><select id="cat" class="select"><option value="">Toutes catégories</option><option>Hair Care</option><option>Skin Care</option><option>Body Care</option><option>Personal Care</option><option>Supplements</option><option>Gummies</option><option>Oils</option><option>Shampoo</option><option>Creams</option></select><button class="btn gold" onclick="addProduct()">+ Ajouter produit</button></div>
+<div class="tablewrap"><table class="table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Competition</th><th>Meta</th><th>TikTok</th><th>COD</th><th>Score</th><th>Action</th></tr></thead><tbody id="productTable"></tbody></table></div>
+</section>
+
+<section id="competitors" class="page">
+<div class="card">
+<h2>🥊 Competitor Research</h2>
+<p class="muted">Centralise les offres observées chez les vendeurs marocains : prix, promo, COD, pages et réseaux sociaux.</p>
+<div class="formgrid">
+<label>Concurrent / Boutique<input id="cname" class="input" placeholder="Ex: Boutique X"></label>
+<label>Produit analysé<select id="cprod" class="select"></select><small id="cprodHint" class="muted" style="display:block;margin-top:6px">Les produits enregistrés dans WINNER MAROC apparaissent ici automatiquement.</small></label>
+<label>Prix actuel DH<input id="cprice" class="input" type="number" placeholder="199"></label>
+<label>Ancien prix DH<input id="coldprice" class="input" type="number" placeholder="299"></label>
+<label>Offre<input id="coffer" class="input" placeholder="1+1, -30%, livraison gratuite..."></label>
+<label>Landing Page<input id="clanding" class="input" placeholder="https://..."></label>
+<label>Product Page<input id="cpage" class="input" placeholder="https://..."></label>
+<label>Facebook<input id="cfacebook" class="input" placeholder="https://facebook.com/..."></label>
+<label>TikTok<input id="ctiktok" class="input" placeholder="https://tiktok.com/@..."></label>
+<label>WhatsApp<input id="cwhatsapp" class="input" placeholder="https://wa.me/..."></label>
+<label>Livraison<input id="cshipping" class="input" placeholder="Gratuite / 20 DH / partout Maroc..."></label>
+<label>Preuve sociale<input id="cproof" class="input" placeholder="Avis, commentaires, nombre de commandes..."></label>
+</div>
+<label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input id="ccod" type="checkbox" checked> Paiement à la livraison (COD)</label>
+<label style="display:block;margin-top:12px">Notes<textarea id="cnotes" class="input" style="width:100%;min-height:90px" placeholder="Creative, angle marketing, différenciation, remarques..."></textarea></label>
+<br><button class="btn gold" onclick="addCompetitor()">+ Enregistrer le concurrent</button>
+</div>
+
+<div class="section card">
+<b>💡 Competition checklist</b>
+<p class="muted">À relever pour chaque concurrent : prix, ancien prix, offre, COD, livraison, landing page, product page, social proof, angle créatif et différenciation. Ces observations décrivent le marché ; elles ne garantissent pas la rentabilité du concurrent.</p>
+</div>
+
+<div class="section tablewrap">
+<table class="table">
+<thead><tr><th>Concurrent</th><th>Produit</th><th>Prix</th><th>Offre</th><th>COD</th><th>Landing</th><th>Product Page</th><th>Social</th></tr></thead>
+<tbody id="compTable"></tbody>
+</table>
+</div>
+</section>
+
+<section id="ads" class="page">
+<div class="grid"><div class="card"><div class="muted">Meta Ads</div><div class="metric">Research</div><p class="muted">Données observées / saisies manuellement. Aucun live data inventé.</p></div><div class="card"><div class="muted">TikTok Ads</div><div class="metric">Research</div><p class="muted">Données observées / saisies manuellement. Aucun live data inventé.</p></div></div>
+<div class="section card"><h2>🧠 Creative Intelligence</h2><p>Note tes observations: Hook, UGC, démonstration, avant/après, offre, CTA et durée vidéo.</p><div class="card" style="margin-bottom:12px"><b>Data sources status</b><p class="muted">Meta Ads API: not connected · TikTok Ads API: not connected · Web data: manual/user-entered in V2.</p></div><textarea id="adnotes" class="input" style="width:100%;min-height:150px" placeholder="Ex: Hook problème → démonstration → preuve → offre..."></textarea></div>
+</section>
+
+
+<section id="research" class="page">
+<div class="card">
+<h2>🎯 Research Center — Morocco COD</h2>
+<p class="muted">Compare rapidement un produit selon demande, concurrence, potentiel créatif, Meta/TikTok, marge et COD.</p>
+<div class="formgrid">
+<label>Produit<input id="rpname" class="input" placeholder="Ex: Sérum cheveux"></label>
+<label>Catégorie<select id="rpcat" class="select"><option>Hair Care</option><option>Skin Care</option><option>Body Care</option><option>Personal Care</option><option>Supplements</option><option>Gummies</option><option>Oils</option><option>Shampoo</option><option>Creams</option></select></label>
+<label>Prix vente DH<input id="rpprice" class="input" type="number" value="199"></label>
+<label>Demande /100<input id="rpdemand" class="input" type="number" value="80" min="0" max="100"></label>
+<label>Concurrence /100 <span class="muted">(100 = très forte)</span><input id="rpcomp" class="input" type="number" value="40" min="0" max="100"></label>
+<label>Creative potential /100<input id="rpcreative" class="input" type="number" value="85" min="0" max="100"></label>
+<label>Meta potential /100<input id="rpmeta" class="input" type="number" value="80" min="0" max="100"></label>
+<label>TikTok potential /100<input id="rptiktok" class="input" type="number" value="85" min="0" max="100"></label>
+<label>Margin potential /100<input id="rpmargin" class="input" type="number" value="80" min="0" max="100"></label>
+<label>COD suitability /100<input id="rpcod" class="input" type="number" value="88" min="0" max="100"></label>
+</div><br>
+<button class="btn gold" onclick="runResearch()">Calculer le Research Score</button>
+<div id="researchResult" style="margin-top:20px"></div>
+</div>
+</section>
+
+
+<section id="compare" class="page">
+<div class="card">
+<h2>⚖️ Compare Products</h2>
+<p class="muted">Choisis jusqu'à 5 produits pour comparer leurs indicateurs de recherche.</p>
+<div id="compareChecks"></div><br>
+<button class="btn gold" onclick="compareProducts()">Comparer</button>
+<div id="compareResult" style="margin-top:20px"></div>
+</div>
+</section>
+<section id="report" class="page">
+<div class="card">
+<h2>📄 Research Report</h2>
+<p class="muted">Génère un rapport synthétique à partir d'un produit sélectionné.</p>
+<select id="reportProduct" class="select"></select>
+<button class="btn gold" onclick="generateReport()">Générer</button>
+<button class="btn light" onclick="exportReport()">Exporter TXT</button>
+<div id="reportResult" style="margin-top:20px"></div>
+</div>
+</section>
+
+
+<section id="data" class="page">
+<div class="card">
+<h2>🗂️ Data Center</h2>
+<p class="muted">Gère tes produits et sauvegarde tes recherches. Les données restent dans ton navigateur.</p>
+<div class="toolbar">
+<button class="btn gold" onclick="exportProducts()">Exporter Products CSV</button>
+<label class="btn light" style="display:inline-block">Importer CSV<input id="csvFile" type="file" accept=".csv,text/csv" style="display:none" onchange="importProducts(event)"></label>
+<button class="btn light" onclick="resetDemo()">Réinitialiser Demo</button>
+</div>
+<div class="card" style="margin-top:12px">
+<b>Format CSV accepté</b>
+<p class="muted">name,cat,price,comp,meta,tiktok,cod,margin,score</p>
+</div>
+</div>
+<div class="section card">
+<h2>🥊 Competition Matrix</h2>
+<p class="muted">Ajoute les observations disponibles pour obtenir un indice de pression concurrentielle.</p>
+<div class="formgrid">
+<label>Concurrent<input id="mxname" class="input" placeholder="Store / page"></label>
+<label>Produit<input id="mxprod" class="input" placeholder="Produit"></label>
+<label>Prix DH<input id="mxprice" class="input" type="number" value="199"></label>
+<label>Annonces observées<input id="mxads" class="input" type="number" value="3"></label>
+<label>Offre /10<input id="mxoffer" class="input" type="number" value="6" min="0" max="10"></label>
+<label>Qualité landing /10<input id="mxlp" class="input" type="number" value="7" min="0" max="10"></label>
+<label>Créatives /10<input id="mxcreative" class="input" type="number" value="7" min="0" max="10"></label>
+<label>Social proof /10<input id="mxproof" class="input" type="number" value="6" min="0" max="10"></label>
+</div><br>
+<button class="btn gold" onclick="addMatrix()">Ajouter observation</button>
+</div>
+<div class="section tablewrap"><table class="table"><thead><tr><th>Concurrent</th><th>Produit</th><th>Prix</th><th>Ads</th><th>Offer</th><th>Landing</th><th>Creative</th><th>Proof</th><th>Pressure</th></tr></thead><tbody id="matrixTable"></tbody></table></div>
+</section>
+
+<section id="landing" class="page">
+<div class="card"><h2>🔗 Landing / Product Page Analyzer</h2><p class="muted">V1: analyse guidée. Le scraping réel/API pourra être connecté ensuite.</p><input id="url" class="input" style="width:100%" placeholder="https://site-concurrent.com/product"><br><br><button class="btn gold" onclick="analyze()">Analyser</button><div id="analysis" style="margin-top:20px"></div></div>
+</section>
+
+<section id="profit" class="page">
+<div class="card"><h2>💰 Moroccan COD Profit Calculator</h2><div class="formgrid">
+<label>Prix de vente (DH)<input id="sell" class="input" type="number" value="199"></label>
+<label>Coût produit (DH)<input id="cost" class="input" type="number" value="45"></label>
+<label>Livraison (DH)<input id="ship" class="input" type="number" value="35"></label>
+<label>Packaging (DH)<input id="pack" class="input" type="number" value="5"></label>
+<label>Confirmation (DH)<input id="confirm" class="input" type="number" value="3"></label>
+<label>Publicité / commande (DH)<input id="adsCost" class="input" type="number" value="40"></label>
+<label>Taux RTO (%)<input id="rto" class="input" type="number" value="20"></label>
+<label>Autres coûts / commande (DH)<input id="other" class="input" type="number" value="0"></label>
+</div><br><button class="btn gold" onclick="calc()">Calculer</button><div id="profitResult" style="margin-top:20px"></div></div>
+</section>
+
+<section id="watchlist" class="page">
+<div class="card"><h2>⭐ My Watchlist</h2><p class="muted">Produits sauvegardés depuis Product Research.</p><div id="watchItems"></div></div>
+</section>
+
+<section id="tests" class="page">
+<div class="card"><h2>🧪 Test Tracker</h2><div class="formgrid">
+<label>Produit<input id="tprod" class="input"></label><label>Plateforme<select id="tplatform" class="select"><option>Meta</option><option>TikTok</option></select></label>
+<label>Budget DH<input id="tbudget" class="input" type="number"></label><label>Leads<input id="tleads" class="input" type="number"></label>
+<label>Orders<input id="torders" class="input" type="number"></label><label>Delivered<input id="tdelivered" class="input" type="number"></label>
+<label>RTO<input id="trto" class="input" type="number"></label><label>Revenue DH<input id="trevenue" class="input" type="number"></label>
+</div><br><button class="btn gold" onclick="addTest()">Enregistrer test</button></div>
+<div class="section tablewrap"><table class="table"><thead><tr><th>Produit</th><th>Platform</th><th>Budget</th><th>Leads</th><th>Orders</th><th>Delivered</th><th>RTO</th><th>Revenue</th></tr></thead><tbody id="testTable"></tbody></table></div>
+</section>
+</main>
+</div>
+
+<script>
+const demo=[
+{name:"Sérum anti-chute",cat:"Hair Care",price:199,comp:"Medium",meta:82,tiktok:91,cod:88,margin:80,score:86},
+{name:"Niacinamide Serum",cat:"Skin Care",price:179,comp:"High",meta:88,tiktok:76,cod:84,margin:83,score:82},
+{name:"Gummies Collagen",cat:"Gummies",price:229,comp:"Medium",meta:79,tiktok:89,cod:81,margin:86,score:84},
+{name:"Huile cheveux",cat:"Oils",price:149,comp:"Low",meta:75,tiktok:85,cod:92,margin:78,score:83},
+{name:"Crème corps",cat:"Body Care",price:169,comp:"Medium",meta:80,tiktok:72,cod:86,margin:82,score:80}
+];
+let products=JSON.parse(localStorage.getItem("wm_products_v2")||"null")||demo;
+let comps=JSON.parse(localStorage.getItem("wm_comps")||"[]");
+let watches=JSON.parse(localStorage.getItem("wm_watch")||"[]");
+let tests=JSON.parse(localStorage.getItem("wm_tests")||"[]");
+
+function save(){localStorage.setItem("wm_products_v2",JSON.stringify(products));localStorage.setItem("wm_comps",JSON.stringify(comps));localStorage.setItem("wm_watch",JSON.stringify(watches));localStorage.setItem("wm_tests",JSON.stringify(tests))}
+function level(x){return x==="Low"?"low":x==="High"?"high":"med"}
+function render(){
+ wmRefreshCompetitorProductSelect();
+ populateCompetitorProducts();
+ document.getElementById("mProducts").textContent=products.length;
+ document.getElementById("mHigh").textContent=products.filter(p=>p.score>=80).length;
+ document.getElementById("mWatch").textContent=watches.length;
+ document.getElementById("mAvg").textContent=Math.round(products.reduce((a,p)=>a+p.score,0)/products.length)+"/100";
+ const rows=products.slice().sort((a,b)=>b.score-a.score).map((p,i)=>`<tr><td><b>${p.name}</b></td><td>${p.cat}</td><td>${p.price} DH</td><td><span class="pill ${level(p.comp)}">${p.comp}</span></td><td>${p.meta}</td><td>${p.tiktok}</td><td class="score">${p.score}/100</td><td><button class="btn light" onclick="watch(${i})">☆</button></td></tr>`).join("");
+ document.getElementById("dashTable").innerHTML=rows;
+ filterProducts(); renderComps(); renderWatch(); renderTests(); renderCompareChecks(); renderReportProducts(); renderMatrix();
+}
+function filterProducts(){
+ const q=(document.getElementById("search")?.value||"").toLowerCase(), c=document.getElementById("cat")?.value||"";
+ const arr=products.filter(p=>(!q||p.name.toLowerCase().includes(q))&&(!c||p.cat===c));
+ document.getElementById("productTable").innerHTML=arr.map((p)=>{const i=products.indexOf(p);return `<tr><td><b>${p.name}</b></td><td>${p.cat}</td><td>${p.price} DH</td><td><span class="pill ${level(p.comp)}">${p.comp}</span></td><td>${p.meta}</td><td>${p.tiktok}</td><td>${p.cod}</td><td class="score">${p.score}</td><td><button class="btn light" onclick="watch(${i})">☆ Save</button></td></tr>`}).join("");
+}
+function watch(i){if(!watches.includes(products[i].name))watches.push(products[i].name);save();render()}
+function addProduct(){
+ const name=prompt("Nom du produit ?"); if(!name)return;
+ const cat=prompt("Catégorie ?","Hair Care")||"Hair Care";
+ const price=Number(prompt("Prix DH ?","199"))||199;
+ products.push({name,cat,price,comp:"Medium",meta:70,tiktok:70,cod:80,margin:75,score:74});save();render();
+}
+function populateCompetitorProducts(){
+ const sel=document.getElementById("cprod");
+ if(!sel)return;
+ const current=sel.value;
+ const rows=products.filter(p=>p && p.name);
+ sel.innerHTML=`<option value="">Choisir un produit...</option>`+rows.map(p=>`<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`).join("");
+ if(rows.some(p=>p.name===current)) sel.value=current;
+}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function addCompetitor(){
+ const o={
+  name:document.getElementById("cname").value.trim()||"Concurrent",
+  prod:document.getElementById("cprod").value||"",
+  price:document.getElementById("cprice").value||"",
+  oldPrice:document.getElementById("coldprice").value||"",
+  offer:document.getElementById("coffer").value.trim(),
+  landing:document.getElementById("clanding").value.trim(),
+  page:document.getElementById("cpage").value.trim(),
+  facebook:document.getElementById("cfacebook").value.trim(),
+  tiktok:document.getElementById("ctiktok").value.trim(),
+  whatsapp:document.getElementById("cwhatsapp").value.trim(),
+  shipping:document.getElementById("cshipping").value.trim(),
+  proof:document.getElementById("cproof").value.trim(),
+  cod:document.getElementById("ccod").checked,
+  notes:document.getElementById("cnotes").value.trim()
+ };
+ if(!o.prod){alert("Choisis d'abord le produit analysé.");return;}
+ comps.push(o);save();renderComps();
+ ["cname","cprice","coldprice","coffer","clanding","cpage","cfacebook","ctiktok","cwhatsapp","cshipping","cproof","cnotes"].forEach(id=>document.getElementById(id).value="");
+ document.getElementById("ccod").checked=true;
+}
+function link(u){return u?`<a href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer">Ouvrir ↗</a>`:"—"}
+function socialLinks(c){
+ const a=[];
+ if(c.facebook||c.social)a.push(link(c.facebook||c.social));
+ if(c.tiktok)a.push(link(c.tiktok));
+ if(c.whatsapp)a.push(link(c.whatsapp));
+ return a.length?a.join(" · "):"—";
+}
+function renderComps(){
+ document.getElementById("compTable").innerHTML=comps.map(c=>`<tr>
+ <td><b>${escapeHtml(c.name)}</b></td>
+ <td>${escapeHtml(c.prod)}</td>
+ <td>${c.price?escapeHtml(c.price)+" DH":"—"}${c.oldPrice?`<br><small class="muted">Avant: ${escapeHtml(c.oldPrice)} DH</small>`:""}</td>
+ <td>${escapeHtml(c.offer||"—")}</td>
+ <td>${c.cod?"✓":"—"}</td>
+ <td>${link(c.landing)}</td>
+ <td>${link(c.page)}</td>
+ <td>${socialLinks(c)}</td>
+ </tr>`).join("")||`<tr><td colspan="8" class="empty">Aucun concurrent enregistré.</td></tr>`;
+}
+function analyze(){
+ const u=document.getElementById("url").value.trim(); if(!u){alert("Ajoute un URL.");return}
+ document.getElementById("analysis").innerHTML=`<div class="grid">
+ ${["Mobile UX","Offer","Trust","Reviews","CTA","COD Checkout"].map((x,i)=>`<div class="card"><div class="muted">${x}</div><div class="metric">${[84,76,81,72,90,88][i]}/100</div><div class="bar"><i style="width:${[84,76,81,72,90,88][i]}%"></i></div></div>`).join("")}</div><br><div class="card"><b>À vérifier manuellement</b><p class="muted">Hook, prix, offre, preuves sociales, livraison, WhatsApp, checkout et différenciation. Cette V1 ne prétend pas extraire automatiquement le contenu réel de la page.</p><a href="${u}" target="_blank">Ouvrir la page ↗</a></div>`;
+}
+function calc(){
+ const s=+sell.value||0,c=+cost.value||0,sh=+ship.value||0,p=+pack.value||0,co=+confirm.value||0,a=+adsCost.value||0,r=(+rto.value||0)/100,o=+other.value||0;
+ const delivered=1-r, revenue=s*delivered, costs=(c+sh+p+co+a+o)*delivered + (c+sh+p)*r, profit=revenue-costs, margin=s?profit/revenue*100:0, be=s-(c+sh+p+co+o);
+ profitResult.innerHTML=`<div class="grid"><div class="card"><div class="muted">Revenue attendu / commande</div><div class="result">${revenue.toFixed(2)} DH</div></div><div class="card"><div class="muted">Profit estimé</div><div class="result">${profit.toFixed(2)} DH</div></div><div class="card"><div class="muted">Net margin</div><div class="result">${margin.toFixed(1)}%</div></div><div class="card"><div class="muted">Break-even avant Ads</div><div class="result">${be.toFixed(2)} DH</div></div></div>`;
+}
+function addTest(){
+ tests.push({prod:tprod.value||"Produit",platform:tplatform.value,budget:tbudget.value,leads:tleads.value,orders:torders.value,delivered:tdelivered.value,rto:trto.value,revenue:trevenue.value});save();renderTests();
+}
+function renderTests(){document.getElementById("testTable").innerHTML=tests.map(t=>`<tr><td>${t.prod}</td><td>${t.platform}</td><td>${t.budget} DH</td><td>${t.leads}</td><td>${t.orders}</td><td>${t.delivered}</td><td>${t.rto}</td><td>${t.revenue} DH</td></tr>`).join("")||`<tr><td colspan="8" class="empty">Aucun test enregistré.</td></tr>`}
+function renderWatch(){document.getElementById("watchItems").innerHTML=watches.map((w,i)=>`<div class="card" style="margin:8px 0;display:flex;justify-content:space-between"><b>${w}</b><button class="btn light" onclick="watches.splice(${i},1);save();render()">Retirer</button></div>`).join("")||`<div class="empty">Ta watchlist est vide.</div>`}
+
+
+function renderCompareChecks(){
+ const el=document.getElementById("compareChecks"); if(!el)return;
+ el.innerHTML=products.map((p,i)=>`<label style="display:block;padding:8px;border-bottom:1px solid var(--line)"><input type="checkbox" class="cmp" value="${i}"> <b>${p.name}</b> · ${p.cat} · ${p.score}/100 · ${p.comp}</label>`).join("");
+}
+function compareProducts(){
+ const ids=[...document.querySelectorAll(".cmp:checked")].map(x=>+x.value).slice(0,5);
+ if(ids.length<2){alert("Choisis au moins 2 produits.");return}
+ const ps=ids.map(i=>products[i]);
+ compareResult.innerHTML=`<div class="tablewrap"><table class="table"><thead><tr><th>Produit</th><th>Score</th><th>Competition</th><th>Meta</th><th>TikTok</th><th>COD</th><th>Margin</th></tr></thead><tbody>${ps.map(p=>`<tr><td><b>${p.name}</b></td><td class="score">${p.score}</td><td>${p.comp}</td><td>${p.meta}</td><td>${p.tiktok}</td><td>${p.cod}</td><td>${p.margin}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function renderReportProducts(){
+ const s=document.getElementById("reportProduct"); if(!s)return;
+ s.innerHTML=products.map((p,i)=>`<option value="${i}">${p.name} — ${p.score}/100</option>`).join("");
+}
+let lastReport="";
+function generateReport(){
+ const p=products[+document.getElementById("reportProduct").value||0]; if(!p)return;
+ const compText=p.comp==="Low"?"faible":p.comp==="High"?"élevée":"moyenne";
+ lastReport=`WINNER MAROC — RESEARCH REPORT
+
+Produit: ${p.name}
+Catégorie: ${p.cat}
+Prix observé: ${p.price} DH
+
+WINNER SCORE: ${p.score}/100
+Meta Potential: ${p.meta}/100
+TikTok Potential: ${p.tiktok}/100
+COD Suitability: ${p.cod}/100
+Margin Potential: ${p.margin}/100
+Competition: ${compText}
+
+INTERPRETATION
+- Vérifier la demande réelle avant lancement.
+- Comparer au moins plusieurs concurrents.
+- Tester plusieurs creatives sur Meta/TikTok.
+- Contrôler le coût publicitaire, le taux de confirmation, la livraison et le RTO.
+
+NOTE
+Les scores sont des indicateurs de recherche et ne garantissent pas les ventes.
+Les données live Meta/TikTok nécessitent des sources/API connectées.`;
+ reportResult.innerHTML=`<div class="card"><pre style="white-space:pre-wrap;font-family:inherit">${lastReport}</pre></div>`;
+}
+function exportReport(){
+ if(!lastReport){generateReport(); if(!lastReport)return}
+ const blob=new Blob([lastReport],{type:"text/plain;charset=utf-8"});
+ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="winner-maroc-research-report.txt"; a.click(); URL.revokeObjectURL(a.href);
+}
+
+
+let matrix=JSON.parse(localStorage.getItem("wm_matrix")||"[]");
+function saveAll(){save();localStorage.setItem("wm_matrix",JSON.stringify(matrix))}
+function addMatrix(){
+ const o={name:mxname.value||"Concurrent",prod:mxprod.value||"",price:+mxprice.value||0,ads:+mxads.value||0,offer:+mxoffer.value||0,lp:+mxlp.value||0,creative:+mxcreative.value||0,proof:+mxproof.value||0};
+ matrix.push(o);saveAll();renderMatrix();
+}
+function renderMatrix(){
+ const el=document.getElementById("matrixTable"); if(!el)return;
+ el.innerHTML=matrix.map(o=>{
+   const pressure=Math.min(100,Math.round(Math.min(40,o.ads*8)+o.offer*1.5+o.lp*1.5+o.creative*1.5+o.proof*1.5));
+   const cls=pressure<40?"low":pressure<70?"med":"high";
+   return `<tr><td><b>${o.name}</b></td><td>${o.prod}</td><td>${o.price} DH</td><td>${o.ads}</td><td>${o.offer}/10</td><td>${o.lp}/10</td><td>${o.creative}/10</td><td>${o.proof}/10</td><td><span class="pill ${cls}">${pressure}/100</span></td></tr>`;
+ }).join("")||`<tr><td colspan="9" class="empty">Aucune observation.</td></tr>`;
+}
+function exportProducts(){
+ const header="name,cat,price,comp,meta,tiktok,cod,margin,score\n";
+ const esc=s=>`"${String(s??"").replaceAll('"','""')}"`;
+ const body=products.map(p=>[p.name,p.cat,p.price,p.comp,p.meta,p.tiktok,p.cod,p.margin,p.score].map(esc).join(",")).join("\n");
+ const blob=new Blob([header+body],{type:"text/csv;charset=utf-8"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="winner-maroc-products.csv";a.click();URL.revokeObjectURL(a.href);
+}
+function importProducts(e){
+ const file=e.target.files[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{try{
+   const lines=reader.result.trim().split(/\r?\n/); if(lines.length<2)throw Error();
+   const cols=lines[0].split(",").map(x=>x.trim().toLowerCase());
+   const idx=k=>cols.indexOf(k);
+   const parse=v=>String(v||"").replace(/^"|"$/g,"").replaceAll('""','"');
+   const arr=lines.slice(1).map(line=>line.split(",").map(parse)).filter(r=>r.length>=cols.length).map(r=>({
+     name:r[idx("name")]||"Produit",cat:r[idx("cat")]||"Hair Care",price:+r[idx("price")]||0,comp:r[idx("comp")]||"Medium",
+     meta:+r[idx("meta")]||0,tiktok:+r[idx("tiktok")]||0,cod:+r[idx("cod")]||0,margin:+r[idx("margin")]||0,score:+r[idx("score")]||0
+   }));
+   if(!arr.length)throw Error();products=arr;saveAll();render();alert(arr.length+" produits importés.");
+ }catch(err){alert("CSV invalide. Utilise le format indiqué.");}};
+ reader.readAsText(file);
+}
+function resetDemo(){if(confirm("Réinitialiser les produits Demo ?")){products=[...demo];watches=[];comps=[];matrix=[];tests=[];saveAll();render();renderMatrix();}}
+
+
+function backupAll(){
+ const data={version:"online-ready-1.0",exportedAt:new Date().toISOString(),products,comps,watches,tests,matrix};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="winner-maroc-backup.json";a.click();URL.revokeObjectURL(a.href);
+}
+function restoreAll(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{try{
+   const d=JSON.parse(r.result);
+   if(!Array.isArray(d.products))throw Error();
+   products=d.products;comps=Array.isArray(d.comps)?d.comps:[];watches=Array.isArray(d.watches)?d.watches:[];tests=Array.isArray(d.tests)?d.tests:[];matrix=Array.isArray(d.matrix)?d.matrix:[];
+   saveAll();render();renderMatrix();alert("Backup restauré avec succès.");
+ }catch(err){alert("Backup JSON invalide.");}};
+ r.readAsText(f);
+}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
+
+function runResearch(){
+ const vals={d:+rpdemand.value||0,c:+rpcomp.value||0,cr:+rpcreative.value||0,m:+rpmeta.value||0,t:+rptiktok.value||0,mg:+rpmargin.value||0,cod:+rpcod.value||0};
+ const score=Math.round(vals.d*.20+(100-vals.c)*.20+vals.cr*.15+vals.m*.10+vals.t*.10+vals.mg*.15+vals.cod*.10);
+ const potential=score>=80?"HIGH RESEARCH POTENTIAL":score>=65?"MEDIUM RESEARCH POTENTIAL":"LOW RESEARCH POTENTIAL";
+ const cls=score>=80?"low":score>=65?"med":"high";
+ const product=rpname.value||"Produit sans nom";
+ const category=rpcat.value;
+ researchResult.innerHTML=`<div class="grid">
+ <div class="card"><div class="muted">Winner Score</div><div class="result">${score}/100</div><span class="pill ${cls}">${potential}</span></div>
+ <div class="card"><div class="muted">Competition</div><div class="result">${vals.c}/100</div><p class="muted">Plus le score est élevé, plus la concurrence est forte.</p></div>
+ <div class="card"><div class="muted">Meta</div><div class="result">${vals.m}/100</div></div>
+ <div class="card"><div class="muted">TikTok</div><div class="result">${vals.t}/100</div></div>
+ </div><br>
+ <div class="card"><b>${product}</b> · ${category} · ${rpprice.value||0} DH
+ <p class="muted">Score indicatif basé sur tes observations. Il ne garantit pas les ventes.</p>
+ <div style="display:grid;gap:9px">
+ ${[["Demand",vals.d],["Competition opportunity",100-vals.c],["Creative",vals.cr],["Meta",vals.m],["TikTok",vals.t],["Margin",vals.mg],["COD",vals.cod]].map(x=>`<div><div class="muted">${x[0]} · ${x[1]}/100</div><div class="bar"><i style="width:${x[1]}%"></i></div></div>`).join("")}
+ </div></div>`;
+}
+
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
+
+function renderCompareChecks(){
+ const el=document.getElementById("compareChecks"); if(!el)return;
+ el.innerHTML=products.map((p,i)=>`<label style="display:block;padding:8px;border-bottom:1px solid var(--line)"><input type="checkbox" class="cmp" value="${i}"> <b>${p.name}</b> · ${p.cat} · ${p.score}/100 · ${p.comp}</label>`).join("");
+}
+function compareProducts(){
+ const ids=[...document.querySelectorAll(".cmp:checked")].map(x=>+x.value).slice(0,5);
+ if(ids.length<2){alert("Choisis au moins 2 produits.");return}
+ const ps=ids.map(i=>products[i]);
+ compareResult.innerHTML=`<div class="tablewrap"><table class="table"><thead><tr><th>Produit</th><th>Score</th><th>Competition</th><th>Meta</th><th>TikTok</th><th>COD</th><th>Margin</th></tr></thead><tbody>${ps.map(p=>`<tr><td><b>${p.name}</b></td><td class="score">${p.score}</td><td>${p.comp}</td><td>${p.meta}</td><td>${p.tiktok}</td><td>${p.cod}</td><td>${p.margin}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function renderReportProducts(){
+ const s=document.getElementById("reportProduct"); if(!s)return;
+ s.innerHTML=products.map((p,i)=>`<option value="${i}">${p.name} — ${p.score}/100</option>`).join("");
+}
+let lastReport="";
+function generateReport(){
+ const p=products[+document.getElementById("reportProduct").value||0]; if(!p)return;
+ const compText=p.comp==="Low"?"faible":p.comp==="High"?"élevée":"moyenne";
+ lastReport=`WINNER MAROC — RESEARCH REPORT
+
+Produit: ${p.name}
+Catégorie: ${p.cat}
+Prix observé: ${p.price} DH
+
+WINNER SCORE: ${p.score}/100
+Meta Potential: ${p.meta}/100
+TikTok Potential: ${p.tiktok}/100
+COD Suitability: ${p.cod}/100
+Margin Potential: ${p.margin}/100
+Competition: ${compText}
+
+INTERPRETATION
+- Vérifier la demande réelle avant lancement.
+- Comparer au moins plusieurs concurrents.
+- Tester plusieurs creatives sur Meta/TikTok.
+- Contrôler le coût publicitaire, le taux de confirmation, la livraison et le RTO.
+
+NOTE
+Les scores sont des indicateurs de recherche et ne garantissent pas les ventes.
+Les données live Meta/TikTok nécessitent des sources/API connectées.`;
+ reportResult.innerHTML=`<div class="card"><pre style="white-space:pre-wrap;font-family:inherit">${lastReport}</pre></div>`;
+}
+function exportReport(){
+ if(!lastReport){generateReport(); if(!lastReport)return}
+ const blob=new Blob([lastReport],{type:"text/plain;charset=utf-8"});
+ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="winner-maroc-research-report.txt"; a.click(); URL.revokeObjectURL(a.href);
+}
+
+
+let matrix=JSON.parse(localStorage.getItem("wm_matrix")||"[]");
+function saveAll(){save();localStorage.setItem("wm_matrix",JSON.stringify(matrix))}
+function addMatrix(){
+ const o={name:mxname.value||"Concurrent",prod:mxprod.value||"",price:+mxprice.value||0,ads:+mxads.value||0,offer:+mxoffer.value||0,lp:+mxlp.value||0,creative:+mxcreative.value||0,proof:+mxproof.value||0};
+ matrix.push(o);saveAll();renderMatrix();
+}
+function renderMatrix(){
+ const el=document.getElementById("matrixTable"); if(!el)return;
+ el.innerHTML=matrix.map(o=>{
+   const pressure=Math.min(100,Math.round(Math.min(40,o.ads*8)+o.offer*1.5+o.lp*1.5+o.creative*1.5+o.proof*1.5));
+   const cls=pressure<40?"low":pressure<70?"med":"high";
+   return `<tr><td><b>${o.name}</b></td><td>${o.prod}</td><td>${o.price} DH</td><td>${o.ads}</td><td>${o.offer}/10</td><td>${o.lp}/10</td><td>${o.creative}/10</td><td>${o.proof}/10</td><td><span class="pill ${cls}">${pressure}/100</span></td></tr>`;
+ }).join("")||`<tr><td colspan="9" class="empty">Aucune observation.</td></tr>`;
+}
+function exportProducts(){
+ const header="name,cat,price,comp,meta,tiktok,cod,margin,score\n";
+ const esc=s=>`"${String(s??"").replaceAll('"','""')}"`;
+ const body=products.map(p=>[p.name,p.cat,p.price,p.comp,p.meta,p.tiktok,p.cod,p.margin,p.score].map(esc).join(",")).join("\n");
+ const blob=new Blob([header+body],{type:"text/csv;charset=utf-8"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="winner-maroc-products.csv";a.click();URL.revokeObjectURL(a.href);
+}
+function importProducts(e){
+ const file=e.target.files[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{try{
+   const lines=reader.result.trim().split(/\r?\n/); if(lines.length<2)throw Error();
+   const cols=lines[0].split(",").map(x=>x.trim().toLowerCase());
+   const idx=k=>cols.indexOf(k);
+   const parse=v=>String(v||"").replace(/^"|"$/g,"").replaceAll('""','"');
+   const arr=lines.slice(1).map(line=>line.split(",").map(parse)).filter(r=>r.length>=cols.length).map(r=>({
+     name:r[idx("name")]||"Produit",cat:r[idx("cat")]||"Hair Care",price:+r[idx("price")]||0,comp:r[idx("comp")]||"Medium",
+     meta:+r[idx("meta")]||0,tiktok:+r[idx("tiktok")]||0,cod:+r[idx("cod")]||0,margin:+r[idx("margin")]||0,score:+r[idx("score")]||0
+   }));
+   if(!arr.length)throw Error();products=arr;saveAll();render();alert(arr.length+" produits importés.");
+ }catch(err){alert("CSV invalide. Utilise le format indiqué.");}};
+ reader.readAsText(file);
+}
+function resetDemo(){if(confirm("Réinitialiser les produits Demo ?")){products=[...demo];watches=[];comps=[];matrix=[];tests=[];saveAll();render();renderMatrix();}}
+
+
+function backupAll(){
+ const data={version:"online-ready-1.0",exportedAt:new Date().toISOString(),products,comps,watches,tests,matrix};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="winner-maroc-backup.json";a.click();URL.revokeObjectURL(a.href);
+}
+function restoreAll(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{try{
+   const d=JSON.parse(r.result);
+   if(!Array.isArray(d.products))throw Error();
+   products=d.products;comps=Array.isArray(d.comps)?d.comps:[];watches=Array.isArray(d.watches)?d.watches:[];tests=Array.isArray(d.tests)?d.tests:[];matrix=Array.isArray(d.matrix)?d.matrix:[];
+   saveAll();render();renderMatrix();alert("Backup restauré avec succès.");
+ }catch(err){alert("Backup JSON invalide.");}};
+ r.readAsText(f);
+}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
+
+function runResearch(){
+ const vals={d:+rpdemand.value||0,c:+rpcomp.value||0,cr:+rpcreative.value||0,m:+rpmeta.value||0,t:+rptiktok.value||0,mg:+rpmargin.value||0,cod:+rpcod.value||0};
+ const score=Math.round(vals.d*.20+(100-vals.c)*.20+vals.cr*.15+vals.m*.10+vals.t*.10+vals.mg*.15+vals.cod*.10);
+ const potential=score>=80?"HIGH RESEARCH POTENTIAL":score>=65?"MEDIUM RESEARCH POTENTIAL":"LOW RESEARCH POTENTIAL";
+ const cls=score>=80?"low":score>=65?"med":"high";
+ const product=rpname.value||"Produit sans nom";
+ const category=rpcat.value;
+ researchResult.innerHTML=`<div class="grid">
+ <div class="card"><div class="muted">Winner Score</div><div class="result">${score}/100</div><span class="pill ${cls}">${potential}</span></div>
+ <div class="card"><div class="muted">Competition</div><div class="result">${vals.c}/100</div><p class="muted">Plus le score est élevé, plus la concurrence est forte.</p></div>
+ <div class="card"><div class="muted">Meta</div><div class="result">${vals.m}/100</div></div>
+ <div class="card"><div class="muted">TikTok</div><div class="result">${vals.t}/100</div></div>
+ </div><br>
+ <div class="card"><b>${product}</b> · ${category} · ${rpprice.value||0} DH
+ <p class="muted">Score indicatif basé sur tes observations. Il ne garantit pas les ventes.</p>
+ <div style="display:grid;gap:9px">
+ ${[["Demand",vals.d],["Competition opportunity",100-vals.c],["Creative",vals.cr],["Meta",vals.m],["TikTok",vals.t],["Margin",vals.mg],["COD",vals.cod]].map(x=>`<div><div class="muted">${x[0]} · ${x[1]}/100</div><div class="bar"><i style="width:${x[1]}%"></i></div></div>`).join("")}
+ </div></div>`;
+}
+
+document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");document.getElementById("title").textContent=b.textContent});
+document.getElementById("search").addEventListener("input",filterProducts);document.getElementById("cat").addEventListener("change",filterProducts);
+render();calc();
+
+
+/* ================= V6 MOBILE MENU ================= */
+function wmToggleMenu(force){
+  const open = typeof force === "boolean" ? force : !document.body.classList.contains("wm-menu-open");
+  document.body.classList.toggle("wm-menu-open", open);
+}
+document.querySelectorAll(".nav button").forEach(function(btn){
+  btn.addEventListener("click", function(){ if(window.innerWidth <= 900) wmToggleMenu(false); });
+});
+window.addEventListener("resize", function(){ if(window.innerWidth > 900) wmToggleMenu(false); });
+
+/* ================= WINNER MAROC V6 — SUPABASE ONLINE ================= */
+const WM_SUPABASE_URL = "https://klipdlmhyzuxzfzhqrrl.supabase.co";
+const WM_SUPABASE_KEY = "sb_publishable_vXw2h0hMbEuU7UbR3vYMIw_RexXSd4F";
+const wmSupabase = window.supabase.createClient(WM_SUPABASE_URL, WM_SUPABASE_KEY);
+let wmCurrentUser = null;
+let wmDemoMode = true;
+
+const wmDemoNames = new Set(demo.map(x => x.name));
+
+function wmSetMsg(text, ok=false){
+  const el=document.getElementById("wmAuthMsg");
+  if(el){el.textContent=text;el.style.color=ok?"#138a5b":"#c43b4b";}
+}
+
+function wmShowAuth(show){
+  const o=document.getElementById("wmAuthOverlay");
+  if(o)o.style.display=show?"flex":"none";
+}
+
+function wmSetOnlineUI(){
+  const badge=document.getElementById("wmStatusBadge");
+  const label=document.getElementById("wmUserLabel");
+  const logout=document.getElementById("wmLogoutBtn");
+  if(wmCurrentUser){
+    badge.textContent="ONLINE · SUPABASE";
+    badge.style.background="#e7f7ef"; badge.style.color="#138a5b";
+    label.textContent=wmCurrentUser.email||"Compte";
+    label.style.display="inline-block";
+    logout.style.display="inline-block";
+  }else{
+    badge.textContent="LOGIN REQUIRED";
+    badge.style.background="#fff1c7"; badge.style.color="#765900";
+    label.style.display="none"; logout.style.display="none";
+  }
+}
+
+async function wmSignIn(){
+  const email=document.getElementById("wmEmail").value.trim();
+  const password=document.getElementById("wmPassword").value;
+  if(!email||!password){wmSetMsg("دخل email و mot de passe.");return;}
+  wmSetMsg("Connexion…",true);
+  const {data,error}=await wmSupabase.auth.signInWithPassword({email,password});
+  if(error){wmSetMsg(error.message);return;}
+  wmCurrentUser=data.user;
+  wmShowAuth(false); wmSetOnlineUI();
+  await wmLoadOnline();
+}
+
+async function wmSignUp(){
+  const email=document.getElementById("wmEmail").value.trim();
+  const password=document.getElementById("wmPassword").value;
+  if(!email||password.length<6){wmSetMsg("دخل email و mot de passe من 6 حروف على الأقل.");return;}
+  wmSetMsg("Création du compte…",true);
+  const {data,error}=await wmSupabase.auth.signUp({email,password});
+  if(error){wmSetMsg(error.message);return;}
+  if(data.session){
+    wmCurrentUser=data.user; wmShowAuth(false); wmSetOnlineUI(); await wmLoadOnline();
+  }else{
+    wmSetMsg("الحساب تخلق. إلا طلب منك تأكيد email، أكد الرسالة ومن بعد دخل.",true);
+  }
+}
+
+async function wmLogout(){
+  await wmSupabase.auth.signOut();
+  wmCurrentUser=null; wmDemoMode=true;
+  products=[...demo]; comps=[]; watches=[]; tests=[];
+  wmSetOnlineUI(); wmShowAuth(true); render();
+}
+
+function wmProductFromDb(r){
+  return {
+    id:r.id, name:r.name, cat:r.category, price:Number(r.price||0),
+    comp:r.competition||"Medium", meta:Number(r.meta_score||0),
+    tiktok:Number(r.tiktok_score||0), cod:Number(r.cod_score||0),
+    margin:Number(r.margin_score||0), score:Number(r.winner_score||0),
+    notes:r.notes||""
+  };
+}
+
+async function wmLoadOnline(){
+  if(!wmCurrentUser)return;
+  const uid=wmCurrentUser.id;
+  const [pr,cr,te,wa]=await Promise.all([
+    wmSupabase.from("products").select("*").eq("user_id",uid).order("created_at",{ascending:false}),
+    wmSupabase.from("competitors").select("*").eq("user_id",uid).order("created_at",{ascending:false}),
+    wmSupabase.from("tests").select("*").eq("user_id",uid).order("created_at",{ascending:false}),
+    wmSupabase.from("watchlist").select("product_id").eq("user_id",uid)
+  ]);
+  if(pr.error){alert("Erreur chargement produits: "+pr.error.message);return;}
+  products=pr.data.map(wmProductFromDb);
+  wmDemoMode=products.length===0;
+  if(wmDemoMode) products=[...demo];
+
+  comps=(cr.data||[]).map(r=>({
+    id:r.id, name:r.name||"Concurrent", prod:r.product_name||"",
+    product_id:r.product_id||null, price:r.price||"", oldPrice:r.old_price||"",
+    offer:r.offer||"", landing:r.landing_url||"", page:r.product_url||"",
+    facebook:r.facebook_url||"", tiktok:r.tiktok_url||"",
+    whatsapp:r.whatsapp_url||"", shipping:r.shipping_info||"",
+    proof:r.social_proof||"", cod:!!r.cod_available, notes:r.notes||""
+  }));
+  tests=(te.data||[]).map(r=>({
+    id:r.id, prod:(products.find(p=>p.id===r.product_id)||{}).name||"Produit",
+    product_id:r.product_id, platform:r.platform, budget:r.budget||"",
+    leads:r.leads||"", orders:r.orders||"", delivered:r.delivered_orders||"",
+    rto:r.rto||"", revenue:r.revenue||""
+  }));
+  const ids=new Set((wa.data||[]).map(r=>r.product_id));
+  watches=products.filter(p=>ids.has(p.id)).map(p=>p.name);
+  populateCompetitorProducts();
+  render();
+}
+
+async function wmSyncAll(){
+  if(!wmCurrentUser)return;
+  const uid=wmCurrentUser.id;
+
+  // Do not upload the built-in demo rows.
+  products=products.filter(p=>!wmDemoNames.has(p.name) || p.id);
+
+  // Clear dependent rows first, then rebuild the user's current working set.
+  for(const table of ["watchlist","tests","landing_pages","research_reports","ad_observations","competitors","products"]){
+    const {error}=await wmSupabase.from(table).delete().eq("user_id",uid);
+    if(error){alert("Erreur sync "+table+": "+error.message);return;}
+  }
+
+  const productRows=products.map(p=>({
+    user_id:uid,name:p.name,category:p.cat||"Beauty / Care / Supplements",
+    price:Number(p.price)||null,competition:p.comp||"Medium",
+    meta_score:Number(p.meta)||0,tiktok_score:Number(p.tiktok)||0,
+    cod_score:Number(p.cod)||0,margin_score:Number(p.margin)||0,
+    winner_score:Number(p.score)||0,status:"research",notes:p.notes||null
+  }));
+
+  let productMap=new Map();
+  if(productRows.length){
+    const {data,error}=await wmSupabase.from("products").insert(productRows).select("id,name");
+    if(error){alert("Erreur produits: "+error.message);return;}
+    productMap=new Map((data||[]).map(r=>[r.name,r.id]));
+    products=products.map(p=>({...p,id:productMap.get(p.name)||p.id}));
+  }
+
+  const compRows=comps.map(c=>({
+    user_id:uid,product_id:productMap.get(c.prod)||c.product_id||null,name:c.name||null,
+    product_name:c.prod||null,price:Number(c.price)||null,
+    old_price:Number(c.oldPrice)||null,landing_url:c.landing||null,
+    product_url:c.page||null,facebook_url:c.facebook||null,
+    tiktok_url:c.tiktok||null,whatsapp_url:c.whatsapp||null,
+    offer:c.offer||null,cod_available:!!c.cod,
+    shipping_info:c.shipping||null,social_proof:c.proof||null,notes:c.notes||null
+  })).filter(c=>c.product_id);
+  if(compRows.length){
+    const {error}=await wmSupabase.from("competitors").insert(compRows);
+    if(error){alert("Erreur concurrents: "+error.message);return;}
+  }
+
+  const testRows=tests.map(t=>({
+    user_id:uid,product_id:t.product_id||productMap.get(t.prod)||null,
+    platform:t.platform||"Meta",budget:Number(t.budget)||null,
+    leads:Number(t.leads)||0,orders:Number(t.orders)||0,
+    delivered_orders:Number(t.delivered)||0,rto:Number(t.rto)||0,
+    revenue:Number(t.revenue)||0
+  })).filter(t=>t.product_id);
+  if(testRows.length){
+    const {error}=await wmSupabase.from("tests").insert(testRows);
+    if(error){alert("Erreur tests: "+error.message);return;}
+  }
+
+  const watchRows=watches.map(name=>({
+    user_id:uid,product_id:productMap.get(name)
+  })).filter(x=>x.product_id);
+  if(watchRows.length){
+    const {error}=await wmSupabase.from("watchlist").insert(watchRows);
+    if(error){alert("Erreur watchlist: "+error.message);return;}
+  }
+
+  wmDemoMode=false;
+  wmSetOnlineUI();
+}
+
+/* Override the old local-only save. Existing buttons/functions can keep calling save(). */
+function save(){
+  localStorage.setItem("wm_products_v2",JSON.stringify(products));
+  localStorage.setItem("wm_comps",JSON.stringify(comps));
+  localStorage.setItem("wm_watch",JSON.stringify(watches));
+  localStorage.setItem("wm_tests",JSON.stringify(tests));
+  if(wmCurrentUser) wmSyncAll();
+}
+
+/* Ensure addProduct doesn't accidentally save the demo dataset online. */
+const wmOriginalAddProduct = addProduct;
+addProduct = function(){
+  wmOriginalAddProduct();
+};
+
+/* Session bootstrap */
+(async function wmBoot(){
+  wmSetOnlineUI();
+  const {data}=await wmSupabase.auth.getSession();
+  wmCurrentUser=data.session?.user||null;
+  if(wmCurrentUser){
+    wmShowAuth(false); wmSetOnlineUI(); await wmLoadOnline();
+  }else{
+    wmShowAuth(true); wmSetOnlineUI(); render();
+  }
+  wmSupabase.auth.onAuthStateChange(async (_event,session)=>{
+    wmCurrentUser=session?.user||null;
+    wmSetOnlineUI();
+    if(wmCurrentUser){wmShowAuth(false);await wmLoadOnline();}
+    else wmShowAuth(true);
+  });
+})();
+
+
+/* ================= V8 COMPETITOR PRODUCT SELECTOR FIX ================= */
+function wmRefreshCompetitorProductSelect(){
+  const sel=document.getElementById("cprod");
+  if(!sel)return;
+  const list=(window.products||products||[]).filter(p=>p && p.name);
+  const current=sel.value;
+  sel.innerHTML='<option value="">Choisir un produit...</option>'+list.map(p=>{
+    const n=escapeHtml(p.name);
+    return `<option value="${n}">${n}</option>`;
+  }).join("");
+  if(list.some(p=>p.name===current)) sel.value=current;
+}
+
+const wmOldPopulateCompetitorProducts = window.populateCompetitorProducts;
+window.populateCompetitorProducts = function(){
+  wmRefreshCompetitorProductSelect();
+};
+
+/* Retry after async Supabase bootstrap/data loading. */
+[100,300,800,1500,3000].forEach(ms=>setTimeout(wmRefreshCompetitorProductSelect,ms));
+
+</script>
+</body></html>
